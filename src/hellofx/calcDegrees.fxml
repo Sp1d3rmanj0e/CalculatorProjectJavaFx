@@ -46,7 +46,7 @@
       <Label fx:id="coordinateOutput" alignment="CENTER" layoutX="140.0" layoutY="258.0" prefHeight="17.0" prefWidth="79.0" text="..." />
       <ImageView fitHeight="324.0" fitWidth="428.0" layoutX="403.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../Users/Sp1d3rmanj0e/Downloads/Unit%20Circle.png" />
+            <Image url="http://www.gradeamathhelp.com/image-files/unit-circle.gif" />
          </image>
       </ImageView>
       <Arc fx:id="unitCircleArc" fill="DODGERBLUE" layoutX="574.0" layoutY="167.0" length="1.0" radiusX="142.0" radiusY="142.0" stroke="#07c1ff" strokeType="INSIDE" strokeWidth="50.0" type="ROUND" />
