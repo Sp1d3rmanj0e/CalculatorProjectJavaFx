@@ -50,5 +50,6 @@
          </image>
       </ImageView>
       <Arc fx:id="unitCircleArc" fill="DODGERBLUE" layoutX="574.0" layoutY="167.0" length="1.0" radiusX="142.0" radiusY="142.0" stroke="#07c1ff" strokeType="INSIDE" strokeWidth="50.0" type="ROUND" />
+      <Label alignment="CENTER" layoutX="100.0" layoutY="6.0" prefHeight="17.0" prefWidth="150.0" text="Input Type:" />
    </children>
 </AnchorPane>

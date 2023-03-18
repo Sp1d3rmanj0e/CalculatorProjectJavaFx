@@ -1,12 +1,16 @@
 package hellofx;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -14,6 +18,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Arc;
 import javafx.scene.transform.Rotate;
+import javafx.stage.Stage;
+import javafx.scene.Node;
 
 public class Controller implements Initializable {
 
@@ -47,13 +53,80 @@ public class Controller implements Initializable {
     @FXML
     private Arc unitCircleArc;
 
+    @FXML
+    private TextField radDenInput;
+
+    @FXML
+    private TextField radNumInput;
+
     private String[] options = {"Degrees", "Radians"};
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
 
-        choiceBox.getItems().addAll(options);
+        choiceBox.getItems().addAll(options); // Adds all values in options[] to the choicebox
+
+        if (Main.getRoomName().equals("Degrees")) {
+            choiceBox.setValue(options[0]); // Sets default value to degrees
+        }
+        else {
+            choiceBox.setValue(options[1]); // Sets default value to radians
+        }
+
+        // Switches rooms based on the value given
+        choiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println(newValue);
+            if (newValue != null) {
+                if (newValue == options[1]) {
+                    try {
+                        switchToRadians(new ActionEvent(choiceBox, null));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        switchToDegrees(new ActionEvent(choiceBox, null));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
+
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
+
+    public void switchToDegrees(ActionEvent event) throws IOException {
+
+        System.out.println("Switching to degrees");
+
+        Main.setRoomName("Degrees");
+
+        root = FXMLLoader.load(getClass().getResource("calcDegrees.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        stage.setTitle("Unit Circle Calculator: Degrees");
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void switchToRadians(ActionEvent event) throws IOException {
+
+        System.out.println("Switching to radians");
+
+        Main.setRoomName("Radians");
+        
+        root = FXMLLoader.load(getClass().getResource("calcRadians.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        stage.setTitle("Unit Circle Calculator: Radians");
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    
 
     double degrees;
     double simpleDegrees;
@@ -61,30 +134,22 @@ public class Controller implements Initializable {
     public void calculate(ActionEvent event) {
         
         try {
-            // Gets the input from the user
-            degrees = Double.parseDouble(degreeInput.getText()); // Gets the raw degree angle
-            simpleDegrees = findSimpleAngle(degrees); // Gets the 0 <= x <= 360 version of the angle
 
-            // Draws the angle on the unit circle by rotating the arc
-            Rotate rotate = new Rotate(-simpleDegrees, 0, 0); // Gets a rotation based on degree input
-            unitCircleArc.getTransforms().clear();            // Removes all previous rotations on the arc
-            unitCircleArc.getTransforms().add(rotate);        // Adds new rotation based on degree input
+            if (Main.getRoomName().equals("Degrees")) {
+                // Gets the input from the user
+                System.out.println(Main.getRoomName());
+                degrees = Double.parseDouble(degreeInput.getText()); // Gets the raw degree angle
+                
+            }
+            else { // "Radians"
+                
+                double numerator   = Double.parseDouble(radNumInput.getText()); // X * pi, where X is the numerator
+                double denominator = Double.parseDouble(radDenInput.getText()); // (X * pi) / Y, where Y is the denominator
 
-            // Sets the degrees section to the degrees input
-            degreeOutput.setText(Double.toString(degrees)); // Adds the raw degree angle
-            degreeSimpleOutput.setText(Double.toString(simpleDegrees)); // Adds the simplified degree angle
-
-            // Sets the coordinates section
-            String coords = degToCoord(degrees);
-            coordinateOutput.setText(coords);
-
-            // Sets the simple radians section
-            radianSimpleOutput.setText(degToRad(simpleDegrees));
-            
-            // Sets the radians section (raw coterminal)
-            String radiansOutputString = (findCoterminals(degrees) * 2) + "π" + " + " + degToRad(simpleDegrees);
-            radianOutput.setText(radiansOutputString);
-            
+                double value = (numerator * Math.PI) / denominator;
+                degrees = Math.toDegrees(value);
+            }
+          
         }
         catch (NumberFormatException e){
             System.out.println("Numbers only plz");
@@ -92,6 +157,29 @@ public class Controller implements Initializable {
         catch (Exception e){
             System.out.println(e);
         }
+
+        simpleDegrees = findSimpleAngle(degrees); // Gets the 0 <= x <= 360 version of the angle
+
+        // Draws the angle on the unit circle by rotating the arc
+        Rotate rotate = new Rotate(-simpleDegrees, 0, 0); // Gets a rotation based on degree input
+        unitCircleArc.getTransforms().clear();            // Removes all previous rotations on the arc
+        unitCircleArc.getTransforms().add(rotate);        // Adds new rotation based on degree input
+
+        // Sets the degrees section to the degrees input
+        degreeOutput.setText(Double.toString(degrees)); // Adds the raw degree angle
+        degreeSimpleOutput.setText(Double.toString(simpleDegrees)); // Adds the simplified degree angle
+
+        // Sets the coordinates section
+        String coords = degToCoord(degrees);
+        coordinateOutput.setText(coords);
+
+        // Sets the simple radians section
+        radianSimpleOutput.setText(degToRad(simpleDegrees));
+        
+        // Sets the radians section (raw coterminal)
+        String radiansOutputString = (findCoterminals(degrees) * 2) + "π" + " + " + degToRad(simpleDegrees);
+        radianOutput.setText(radiansOutputString);
+
     }
 
     // Returns the number of coterminals in a given angle
