@@ -75,7 +75,6 @@ public class Controller implements Initializable {
 
         // Switches rooms based on the value given
         choiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println(newValue);
             if (newValue != null) {
                 if (newValue == options[1]) {
                     try {
@@ -137,7 +136,6 @@ public class Controller implements Initializable {
 
             if (Main.getRoomName().equals("Degrees")) {
                 // Gets the input from the user
-                System.out.println(Main.getRoomName());
                 degrees = Double.parseDouble(degreeInput.getText()); // Gets the raw degree angle
                 
             }
