@@ -257,8 +257,6 @@ public class Controller implements Initializable {
         degree = roundIfClose(degree);
         degree = degree % 360;
 
-        System.out.println(">>>>>>>" + degree);
-
         if (isInteger(degree))
         {
             // find a unit circle fraction if possible
