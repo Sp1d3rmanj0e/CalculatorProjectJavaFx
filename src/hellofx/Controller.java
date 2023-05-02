@@ -255,7 +255,10 @@ public class Controller implements Initializable {
     private String degToCoord(double degree)
     {
         degree = roundIfClose(degree);
-        
+        degree = degree % 360;
+
+        System.out.println(">>>>>>>" + degree);
+
         if (isInteger(degree))
         {
             // find a unit circle fraction if possible
@@ -291,7 +294,7 @@ public class Controller implements Initializable {
         
         double x = Math.cos(degree);
         String strX = df.format(x);
-        
+
         return coord(strY, strX);
     }
     
